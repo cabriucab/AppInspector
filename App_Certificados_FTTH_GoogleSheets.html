@@ -8,20 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F4F5F1;
-    --surface:#FFFFFF;
-    --ink:#16233A;
-    --ink-soft:#5B6472;
-    --ink-faint:#8B93A0;
-    --accent:#FF7A45;
-    --accent-2:#1FA9A0;
-    --border:#E1E4DE;
-    --border-strong:#C9CDC5;
-    --danger:#D64550;
-    --radius:14px;
-    --font-display:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+    --bg:#F4F5F1; --surface:#FFFFFF; --ink:#16233A; --ink-soft:#5B6472; --ink-faint:#8B93A0;
+    --accent:#FF7A45; --accent-2:#1FA9A0; --border:#E1E4DE; --border-strong:#C9CDC5; --danger:#D64550;
+    --radius:14px; --font-display:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
     --font-body:'Inter', system-ui, -apple-system, sans-serif;
-
     --c-ingresado-bg:#D9E6FB; --c-ingresado-ink:#1D4E89;
     --c-encontrol-bg:#FFE9B8; --c-encontrol-ink:#8A5A00;
     --c-observado-bg:#FBD6CC; --c-observado-ink:#9C3B23;
@@ -30,15 +20,12 @@
     --c-pagado-bg:#C9EEDC;   --c-pagado-ink:#12805A;
     --c-sin-bg:#ECEDE9;      --c-sin-ink:#6B7280;
   }
-
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0; padding:0; height:100%;}
   body{background:var(--bg); color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
-
   #app{max-width:480px; margin:0 auto; min-height:100vh; background:var(--bg); display:flex; flex-direction:column; position:relative;}
 
-  /* ---------- Login ---------- */
   .login-wrap{flex:1; display:flex; flex-direction:column; justify-content:center; padding:32px 28px;}
   .login-mark{width:52px; height:52px; border-radius:14px; background:var(--ink); display:flex; align-items:center; justify-content:center; margin-bottom:20px;}
   .login-title{font-family:var(--font-display); font-size:24px; font-weight:700; margin-bottom:4px;}
@@ -47,26 +34,23 @@
   .login-error{color:var(--danger); font-size:13px; font-weight:600; margin-top:10px; text-align:center;}
   .login-footer{margin-top:22px; font-size:11.5px; color:var(--ink-faint); text-align:center; line-height:1.5;}
 
-  /* ---------- Top bar ---------- */
   .topbar{position:sticky; top:0; z-index:20; background:var(--bg); padding:18px 20px 12px; border-bottom:1px solid var(--border);}
   .topbar-row{display:flex; align-items:center; gap:10px;}
   .mark{width:30px; height:30px; flex:none; border-radius:8px; background:var(--ink); display:flex; align-items:center; justify-content:center;}
-  .mark svg{display:block;}
-  .brand{display:flex; flex-direction:column; line-height:1.15; flex:1;}
+  .brand{display:flex; flex-direction:column; line-height:1.15; flex:1; min-width:0;}
   .brand-title{font-family:var(--font-display); font-weight:600; font-size:15px; letter-spacing:0.02em;}
-  .brand-sub{font-size:11px; color:var(--ink-faint); letter-spacing:0.04em; text-transform:uppercase;}
+  .brand-sub{font-size:11px; color:var(--ink-faint); letter-spacing:0.03em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .role-pill{font-size:9.5px; font-weight:800; letter-spacing:0.04em; background:var(--ink); color:#fff; padding:1px 6px; border-radius:5px; margin-left:6px; vertical-align:1px;}
   .topbar-actions{display:flex; gap:6px;}
   .icon-btn{width:32px; height:32px; border-radius:8px; border:1px solid var(--border-strong); background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft);}
   .icon-btn.spinning svg{animation:spin 0.8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .screen-title{font-family:var(--font-display); font-size:22px; font-weight:600; margin:14px 0 2px; letter-spacing:-0.01em;}
-  .screen-sub{font-size:13px; color:var(--ink-soft); margin:0; display:flex; align-items:center; gap:6px;}
+  .screen-sub{font-size:13px; color:var(--ink-soft); margin:0;}
   .back-btn{background:none; border:none; padding:6px 8px 6px 0; margin-left:-8px; color:var(--ink); font-size:14px; font-family:var(--font-body); font-weight:600; display:flex; align-items:center; gap:4px; cursor:pointer;}
 
-  /* ---------- Content ---------- */
   .content{flex:1; padding:16px 20px 100px; overflow-y:auto;}
 
-  /* ---------- KPI grid ---------- */
   .kpi-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px;}
   .kpi-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 14px 12px;}
   .kpi-value{font-family:var(--font-display); font-size:28px; font-weight:600; line-height:1;}
@@ -74,12 +58,10 @@
   .kpi-card.accent{background:var(--ink); color:#fff;}
   .kpi-card.accent .kpi-label{color:#B9C0CC;}
 
-  /* ---------- Section ---------- */
   .section{margin-bottom:24px;}
   .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;}
   .section-title{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft);}
 
-  /* ---------- Bar rows ---------- */
   .bar-row{margin-bottom:10px;}
   .bar-row-top{display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:5px;}
   .bar-row-name{color:var(--ink); font-weight:600;}
@@ -87,7 +69,6 @@
   .bar-track{height:8px; background:var(--border); border-radius:5px; overflow:hidden;}
   .bar-fill{height:100%; border-radius:5px; transition:width 0.5s ease;}
 
-  /* ---------- Badges ---------- */
   .badge{display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px; font-size:11.5px; font-weight:700; letter-spacing:0.01em; white-space:nowrap;}
   .badge.ingresado{background:var(--c-ingresado-bg); color:var(--c-ingresado-ink);}
   .badge.encontrol{background:var(--c-encontrol-bg); color:var(--c-encontrol-ink);}
@@ -97,8 +78,8 @@
   .badge.pagado{background:var(--c-pagado-bg); color:var(--c-pagado-ink);}
   .badge.sin{background:var(--c-sin-bg); color:var(--c-sin-ink);}
   .badge.obra{background:#EAE7FB; color:#4A3B96;}
+  .badge.inspector{background:#EAF6F1; color:#12805A;}
 
-  /* ---------- Search / filters ---------- */
   .search-wrap{display:flex; gap:8px; margin-bottom:12px;}
   .search-input, .field-select{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:14px; font-family:var(--font-body); color:var(--ink);}
   .search-input:focus, .field-select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:transparent;}
@@ -108,12 +89,11 @@
   .chip{flex:none; padding:6px 12px; border-radius:999px; border:1px solid var(--border-strong); background:var(--surface); font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; white-space:nowrap;}
   .chip.active{background:var(--ink); color:#fff; border-color:var(--ink);}
 
-  /* ---------- Certificate cards ---------- */
   .cert-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:10px; cursor:pointer; display:flex; flex-direction:column; gap:8px;}
   .cert-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
   .cert-nro{font-family:var(--font-display); font-weight:600; font-size:14px;}
   .cert-meta{font-size:12.5px; color:var(--ink-soft); display:flex; flex-wrap:wrap; gap:4px 10px;}
-  .cert-meta span{white-space:nowrap;}
+  .cert-obra-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
   .cert-obra{font-size:11.5px; font-weight:700; color:#4A3B96;}
 
   .empty-state{text-align:center; padding:60px 20px; color:var(--ink-soft);}
@@ -121,7 +101,6 @@
   .empty-state-title{font-weight:700; color:var(--ink); margin-bottom:4px; font-size:15px;}
   .empty-state-sub{font-size:13px; line-height:1.5;}
 
-  /* ---------- Detail screen ---------- */
   .detail-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:20px;}
   .detail-tarea{font-size:13.5px; color:var(--ink-soft);}
   .detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:14px;}
@@ -129,7 +108,6 @@
   .detail-field-value{font-size:13.5px; font-weight:600;}
   .detail-field-value.pending{color:var(--ink-faint); font-weight:500; font-style:italic;}
 
-  /* ---------- Timeline ---------- */
   .timeline{position:relative; padding-left:22px;}
   .timeline::before{content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:repeating-linear-gradient(to bottom, var(--border-strong) 0 4px, transparent 4px 8px);}
   .tl-node{position:relative; padding-bottom:20px;}
@@ -139,19 +117,16 @@
   .tl-node.latest .tl-dot::after{content:''; position:absolute; inset:-5px; border-radius:50%; border:1.5px solid var(--accent); animation:pulse 2s ease-out infinite;}
   @keyframes pulse{0%{opacity:0.9; transform:scale(0.7);} 100%{opacity:0; transform:scale(1.6);}}
   .tl-date{font-family:var(--font-display); font-size:11px; color:var(--ink-faint); margin-bottom:3px;}
-  .tl-user{font-family:var(--font-display); font-size:10px; color:var(--ink-faint);}
   .tl-transition{font-size:13px; font-weight:600; margin:2px 0 3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
   .tl-arrow{color:var(--ink-faint); font-weight:400;}
   .tl-obs{font-size:12.5px; color:var(--ink-soft); line-height:1.4;}
 
-  /* ---------- Buttons ---------- */
   .btn{display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:13px 16px; border-radius:11px; border:none; font-family:var(--font-body); font-size:14.5px; font-weight:700; cursor:pointer;}
   .btn-primary{background:var(--ink); color:#fff;}
   .btn-accent{background:var(--accent); color:#fff;}
   .btn-ghost{background:transparent; color:var(--ink-soft); border:1px solid var(--border-strong);}
   .btn[disabled]{opacity:0.55; pointer-events:none;}
 
-  /* ---------- Bottom nav ---------- */
   .bottom-nav{position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; background:var(--surface); border-top:1px solid var(--border); display:flex; z-index:30; padding-bottom:env(safe-area-inset-bottom, 0);}
   .nav-btn{flex:1; background:none; border:none; padding:10px 0 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--ink-faint); font-family:var(--font-body); font-size:10.5px; font-weight:700; letter-spacing:0.02em;}
   .nav-btn.active{color:var(--ink);}
@@ -161,7 +136,6 @@
   .fab{position:fixed; right:20px; bottom:76px; z-index:31; width:52px; height:52px; border-radius:50%; background:var(--accent); color:#fff; border:none; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(255,122,69,0.4); cursor:pointer;}
   @media (min-width:480px){ .fab{right:calc(50% - 220px);} }
 
-  /* ---------- Modal / sheet ---------- */
   .overlay{position:fixed; inset:0; background:rgba(22,35,58,0.45); z-index:40; display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s ease;}
   .overlay.open{opacity:1; pointer-events:auto;}
   .sheet{width:100%; max-width:480px; background:var(--bg); border-radius:20px 20px 0 0; padding:20px 20px 28px; max-height:88vh; overflow-y:auto; transform:translateY(16px); transition:transform 0.2s ease;}
@@ -181,11 +155,6 @@
   .toast{position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(10px); background:var(--ink); color:#fff; padding:11px 18px; border-radius:10px; font-size:13px; font-weight:600; z-index:50; opacity:0; pointer-events:none; transition:opacity 0.2s ease, transform 0.2s ease; max-width:88%; text-align:center;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   .toast.error{background:var(--danger);}
-
-  .session-row{display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:18px;}
-  .session-name{font-size:13px; font-weight:700;}
-  .session-sub{font-size:11px; color:var(--ink-faint);}
-  .logout-link{font-size:12px; font-weight:700; color:var(--ink-soft); background:none; border:none; cursor:pointer; text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -196,11 +165,7 @@
 (function(){
   "use strict";
 
-  // ======================================================================
-  // CONFIGURACION: pegá acá la URL de tu Web App de Google Apps Script
-  // (ver la guía de instalación para saber cómo obtenerla).
-  // ======================================================================
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQKr-ySGwSbXux4uo0gYKrCfBuUlilXrKAUyuQX9HkUw89G5FlE99FokoyuQiODGtG/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKO30C0lEMgqC8plg-uR2Ee9bo13GfDjyUqJL89HILsHkhCd6KQUNXBeR-oXXpYQ44/exec";
 
   var ESTADOS = ["Ingresado","En Control","Observado","Controlado OK","Enviado a Pago","Pagado"];
   var ESTADO_CLASS = {
@@ -215,7 +180,7 @@
   };
 
   var state = {
-    session: null,            // { usuario, nombre }
+    session: null,             // { usuario, pin, nombre, rol }
     screen: "panel",
     loading: true,
     syncing: false,
@@ -224,24 +189,20 @@
     loginUsuario: "",
     certificados: [],
     movimientos: [],
-    listas: { contratistas: [], obras: [], tareas: [] },
+    listas: { contratistas: [], tareas: [] },
+    obras: [],                 // [{obra, inspector}]
+    usuariosNombres: {},       // { usuario: nombreCompleto }
     filterEstado: "Todos",
     filterObra: "Todas",
+    filterInspector: "Todos",
     search: "",
     selectedNro: null,
     sheet: null
   };
 
-  // ---------------- API (Google Sheets via Apps Script) ----------------
-  function configured(){
-    return APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf("http") === 0;
-  }
+  function isAdmin(){ return state.session && state.session.rol === "Administrador"; }
 
-  async function apiGetData(){
-    var res = await fetch(APPS_SCRIPT_URL + "?action=data");
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    return res.json();
-  }
+  function configured(){ return APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf("http") === 0; }
 
   async function apiPost(action, payload){
     var body = Object.assign({ action: action }, payload || {});
@@ -254,13 +215,26 @@
     return res.json();
   }
 
+  function authPayload(extra){
+    return Object.assign({ usuario: state.session.usuario, pin: state.session.pin }, extra || {});
+  }
+
   async function refreshData(){
     state.syncing = true; render();
     try {
-      var data = await apiGetData();
-      state.certificados = data.certificados || [];
-      state.movimientos = data.movimientos || [];
-      state.listas = data.listas || { contratistas: [], obras: [], tareas: [] };
+      var data = await apiPost('data', authPayload());
+      if(data && data.ok){
+        state.certificados = data.certificados || [];
+        state.movimientos = data.movimientos || [];
+        state.listas = data.listas || { contratistas: [], tareas: [] };
+        state.obras = data.obras || [];
+        state.usuariosNombres = data.usuariosNombres || {};
+        state.session.nombre = data.nombre || state.session.nombre;
+        state.session.rol = data.rol || state.session.rol;
+      } else {
+        showToast("Sesion invalida, volve a ingresar.", true);
+        state.session = null;
+      }
     } catch(e){
       showToast("No se pudo sincronizar con la planilla.", true);
     }
@@ -290,8 +264,19 @@
     if(p.length!==3) return iso;
     return p[2]+"/"+p[1]+"/"+p[0];
   }
+  function obraInspectorMap(){
+    var map = {};
+    state.obras.forEach(function(o){ map[o.obra] = o.inspector; });
+    return map;
+  }
+  function nombreDe(usuario){
+    return state.usuariosNombres[usuario] || usuario;
+  }
   function certConEstado(){
-    return state.certificados.map(function(c){ return Object.assign({}, c, { estado: estadoActual(c.nro) }); });
+    var map = obraInspectorMap();
+    return state.certificados.map(function(c){
+      return Object.assign({}, c, { estado: estadoActual(c.nro), inspector: map[c.obra] || c.creadoPor });
+    });
   }
   function groupCount(list, key){
     var map = {};
@@ -299,7 +284,6 @@
     return map;
   }
 
-  // ---------------- toast ----------------
   var toastTimer = null;
   function showToast(msg, isError){
     var el = document.getElementById('toast');
@@ -315,7 +299,6 @@
     });
   }
 
-  // ---------------- icons ----------------
   function iconHome(){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>'; }
   function iconList(){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>'; }
   function iconPlus(){ return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; }
@@ -323,25 +306,20 @@
   function iconMarkBig(){ return '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h10"/><circle cx="12" cy="12" r="1.4" fill="white" stroke="none"/></svg>'; }
   function iconRefresh(){ return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>'; }
 
-  // ---------------- render ----------------
   function render(){
     var app = document.getElementById('app');
     if(!state.session){ app.innerHTML = renderLogin(); bindEvents(); return; }
-
     if(state.loading){
       app.innerHTML = '<div class="content" style="padding-top:80px;"><div class="empty-state"><div class="empty-state-icon">📡</div><div class="empty-state-title">Cargando datos de la planilla…</div></div></div>';
       return;
     }
-
     var html = "";
     if(state.screen === "panel") html = renderPanel();
     else if(state.screen === "lista") html = renderLista();
     else if(state.screen === "detalle") html = renderDetalle();
-
     html += renderBottomNav();
     if(state.screen !== "detalle") html += renderFab();
     html += renderSheet();
-
     app.innerHTML = html;
     bindEvents();
   }
@@ -350,24 +328,22 @@
     return '<div class="login-wrap">' +
       '<div class="login-mark">'+iconMarkBig()+'</div>' +
       '<div class="login-title">FTTH CONTROL</div>' +
-      '<p class="login-sub">Control de certificados de obra. Ingresá con tu usuario para acceder a los datos compartidos.</p>' +
+      '<p class="login-sub">Control de certificados de obra. Ingresá con tu usuario para acceder a tus datos.</p>' +
       '<div class="login-card">' +
         '<div class="field"><label class="field-label">Usuario</label><input class="field-input" id="fUsuario" type="text" autocomplete="username" placeholder="Ej: inspector1" value="'+esc(state.loginUsuario)+'"></div>' +
         '<div class="field" style="margin-bottom:6px;"><label class="field-label">PIN</label><input class="field-input" id="fPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••"></div>' +
         (state.loginError ? '<div class="login-error">'+esc(state.loginError)+'</div>' : '') +
         '<button class="btn btn-primary" style="margin-top:14px;" data-action="login" '+(state.loggingIn?'disabled':'')+'>'+(state.loggingIn?'Ingresando…':'Ingresar')+'</button>' +
       '</div>' +
-      '<div class="login-footer">Los datos se guardan en la planilla de Google Sheets del equipo.'+(configured()?'':' <br><b>Falta configurar la URL de Apps Script en el archivo.</b>')+'</div>' +
+      '<div class="login-footer">Los datos se guardan en la planilla de Google Sheets del equipo. Cada inspector ve solo sus propias obras; el administrador ve todo.'+(configured()?'':' <br><b>Falta configurar la URL de Apps Script en el archivo.</b>')+'</div>' +
     '</div>';
   }
 
   function topbarBrand(){
     return '<div class="topbar-row">' +
         '<div class="mark">'+iconMark()+'</div>' +
-        '<div class="brand"><span class="brand-title">FTTH CONTROL</span><span class="brand-sub">'+esc(state.session.nombre)+'</span></div>' +
-        '<div class="topbar-actions">' +
-          '<button class="icon-btn'+(state.syncing?' spinning':'')+'" data-action="sync" title="Actualizar">'+iconRefresh()+'</button>' +
-        '</div>' +
+        '<div class="brand"><span class="brand-title">FTTH CONTROL</span><span class="brand-sub">'+esc(state.session.nombre)+(isAdmin()?'<span class="role-pill">ADMIN</span>':'')+'</span></div>' +
+        '<div class="topbar-actions"><button class="icon-btn'+(state.syncing?' spinning':'')+'" data-action="sync" title="Actualizar">'+iconRefresh()+'</button></div>' +
       '</div>';
   }
 
@@ -385,7 +361,7 @@
 
     var html = '<div class="topbar">' + topbarBrand() +
       '<div class="screen-title">Panel de Control</div>' +
-      '<p class="screen-sub">' + total + ' certificado' + (total===1?'':'s') + ' registrado' + (total===1?'':'s') + '</p>' +
+      '<p class="screen-sub">' + total + ' certificado' + (total===1?'':'s') + (isAdmin()?' (todos los inspectores)':'') + '</p>' +
     '</div>';
 
     html += '<div class="content">';
@@ -408,6 +384,10 @@
 
     html += barSection("Por estado", ESTADOS, porEstado, total, function(k){ return BAR_COLOR[k]; });
     html += barSection("Por obra", Object.keys(porObra).sort(), porObra, total, function(){ return "#4A3B96"; });
+    if(isAdmin()){
+      var porInspector = groupCount(withEstado.map(function(c){ return Object.assign({}, c, { inspectorNombre: nombreDe(c.inspector) }); }), "inspectorNombre");
+      html += barSection("Por inspector", Object.keys(porInspector).sort(), porInspector, total, function(){ return "#12805A"; });
+    }
     html += barSection("Por contratista", Object.keys(porContratista).sort(), porContratista, total, function(){ return "var(--accent-2)"; });
     html += barSection("Por tipo de tarea", Object.keys(porTarea).sort(), porTarea, total, function(){ return "var(--ink)"; });
 
@@ -433,9 +413,7 @@
   }
 
   function emptyState(icon, title, sub){
-    return '<div class="empty-state"><div class="empty-state-icon">'+icon+'</div>' +
-      '<div class="empty-state-title">'+esc(title)+'</div>' +
-      '<div class="empty-state-sub">'+esc(sub)+'</div></div>';
+    return '<div class="empty-state"><div class="empty-state-icon">'+icon+'</div><div class="empty-state-title">'+esc(title)+'</div><div class="empty-state-sub">'+esc(sub)+'</div></div>';
   }
 
   function filteredCerts(){
@@ -445,14 +423,15 @@
       var matchesQ = !q || (c.nro.toLowerCase().indexOf(q)>-1 || c.contratista.toLowerCase().indexOf(q)>-1 || (c.obra||"").toLowerCase().indexOf(q)>-1);
       var matchesE = state.filterEstado === "Todos" || c.estado === state.filterEstado;
       var matchesO = state.filterObra === "Todas" || c.obra === state.filterObra;
-      return matchesQ && matchesE && matchesO;
+      var matchesI = !isAdmin() || state.filterInspector === "Todos" || c.inspector === state.filterInspector;
+      return matchesQ && matchesE && matchesO && matchesI;
     }).sort(function(a,b){ return a.fechaRecepcion < b.fechaRecepcion ? 1 : -1; });
   }
 
   function renderLista(){
     var withEstado = certConEstado();
     var filtered = filteredCerts();
-    var obras = state.listas.obras || [];
+    var obras = state.obras.map(function(o){ return o.obra; });
 
     var html = '<div class="topbar">' + topbarBrand() +
       '<div class="screen-title">Certificados</div>' +
@@ -476,20 +455,32 @@
       }).join("") + '</div>';
     }
 
+    if(isAdmin()){
+      var inspectores = Array.from(new Set(state.obras.map(function(o){ return o.inspector; }))).sort();
+      if(inspectores.length){
+        html += '<div class="filter-label">Inspector</div>';
+        var chipsI = ["Todos"].concat(inspectores);
+        html += '<div class="chip-row">' + chipsI.map(function(u){
+          return '<button class="chip'+(state.filterInspector===u?' active':'')+'" data-action="filtroInspector" data-inspector="'+esc(u)+'">'+esc(nombreDe(u))+'</button>';
+        }).join("") + '</div>';
+      }
+    }
+
     html += '<div id="listaResultados">' + listaResultadosHtml(filtered) + '</div>';
     html += '</div>';
     return html;
   }
 
   function listaResultadosHtml(filtered){
-    if(filtered.length === 0){
-      return emptyState("🔍","Sin resultados","Probá otra búsqueda o cambiá los filtros.");
-    }
+    if(filtered.length === 0) return emptyState("🔍","Sin resultados","Probá otra búsqueda o cambiá los filtros.");
     return filtered.map(function(c){
       return '<div class="cert-card" data-action="abrir" data-nro="'+esc(c.nro)+'">' +
         '<div class="cert-card-top"><span class="cert-nro">'+esc(c.nro)+'</span>' +
         '<span class="badge '+ESTADO_CLASS[c.estado]+'">'+esc(c.estado)+'</span></div>' +
-        (c.obra ? '<div class="cert-obra">'+esc(c.obra)+'</div>' : '') +
+        '<div class="cert-obra-row">' +
+          (c.obra ? '<span class="cert-obra">'+esc(c.obra)+'</span>' : '') +
+          (isAdmin() && c.inspector ? '<span class="badge inspector">'+esc(nombreDe(c.inspector))+'</span>' : '') +
+        '</div>' +
         '<div class="cert-meta"><span>'+esc(c.contratista)+'</span><span>·</span><span>'+esc(c.tipoTarea)+'</span><span>·</span><span>'+esc(fmtFecha(c.fechaRecepcion))+'</span></div>' +
       '</div>';
     }).join("");
@@ -499,6 +490,8 @@
     var nro = state.selectedNro;
     var cert = state.certificados.find(function(c){ return c.nro===nro; });
     if(!cert){ state.screen = "lista"; return renderLista(); }
+    var map = obraInspectorMap();
+    var inspector = map[cert.obra];
     var estado = estadoActual(nro);
     var fc = fechaControl(nro);
     var fe = fechaEnvio(nro);
@@ -511,7 +504,10 @@
 
     html += '<div class="content">';
     html += '<div class="detail-card">' +
-      (cert.obra ? '<div class="badge obra" style="margin-bottom:8px;">'+esc(cert.obra)+'</div>' : '') +
+      '<div class="cert-obra-row" style="margin-bottom:8px;">' +
+        (cert.obra ? '<span class="badge obra">'+esc(cert.obra)+'</span>' : '') +
+        (isAdmin() && inspector ? '<span class="badge inspector">'+esc(nombreDe(inspector))+'</span>' : '') +
+      '</div>' +
       '<div class="cert-card-top" style="margin-bottom:2px;"><span class="detail-tarea">'+esc(cert.contratista)+' · '+esc(cert.tipoTarea)+'</span>' +
       '<span class="badge '+ESTADO_CLASS[estado]+'">'+esc(estado)+'</span></div>' +
       '<div class="detail-grid">' +
@@ -530,7 +526,7 @@
       html += '<div class="timeline">' + ms.map(function(m, idx){
         return '<div class="tl-node'+(idx===0?' latest':'')+'">' +
           '<div class="tl-dot" style="background:'+(BAR_COLOR[m.estadoNuevo]||'var(--ink-faint)')+';"></div>' +
-          '<div class="tl-date">'+esc(fmtFecha(m.fecha))+(m.registradoPor?'  ·  '+esc(m.registradoPor):'')+'</div>' +
+          '<div class="tl-date">'+esc(fmtFecha(m.fecha))+(m.registradoPor?'  ·  '+esc(nombreDe(m.registradoPor)):'')+'</div>' +
           '<div class="tl-transition">' +
             (m.estadoAnterior ? '<span>'+esc(m.estadoAnterior)+'</span><span class="tl-arrow">→</span>' : '') +
             '<span class="badge '+ESTADO_CLASS[m.estadoNuevo]+'">'+esc(m.estadoNuevo)+'</span>' +
@@ -569,7 +565,7 @@
 
   function sheetNuevoCert(){
     var contratistas = state.listas.contratistas;
-    var obras = state.listas.obras;
+    var obras = state.obras.map(function(o){ return o.obra; });
     var tareas = state.listas.tareas;
     var today = new Date().toISOString().slice(0,10);
     return '<div class="sheet-title">Nuevo certificado</div>' +
@@ -579,9 +575,10 @@
         selectHtml('fContratista', contratistas) +
         '<div class="add-inline"><input class="field-input" id="fNuevaContratista" type="text" placeholder="Agregar contratista nueva"><button data-action="addContratista">Agregar</button></div>' +
       '</div>' +
-      '<div class="field"><label class="field-label">Obra</label>' +
+      '<div class="field"><label class="field-label">Obra'+(!isAdmin()?' (tuya)':'')+'</label>' +
         selectHtml('fObra', obras) +
         '<div class="add-inline"><input class="field-input" id="fNuevaObra" type="text" placeholder="Agregar obra nueva"><button data-action="addObra">Agregar</button></div>' +
+        (obras.length===0 ? '<div class="field-hint">Todavía no tenés obras asignadas. Agregá una arriba para empezar.</div>' : '') +
       '</div>' +
       '<div class="field"><label class="field-label">Tipo de tarea</label>' +
         selectHtml('fTarea', tareas) +
@@ -622,7 +619,6 @@
       '</div>';
   }
 
-  // ---------------- events ----------------
   function bindEvents(){
     var app = document.getElementById('app');
     app.querySelectorAll('[data-action]').forEach(function(el){
@@ -633,9 +629,7 @@
       });
     });
     var search = document.getElementById('searchInput');
-    if(search){
-      search.addEventListener('input', function(){ state.search = search.value; refreshListaResultados(); });
-    }
+    if(search){ search.addEventListener('input', function(){ state.search = search.value; refreshListaResultados(); }); }
     var fPin = document.getElementById('fPin');
     if(fPin){ fPin.addEventListener('keydown', function(ev){ if(ev.key === "Enter") handleAction("login"); }); }
     var fUsuario = document.getElementById('fUsuario');
@@ -664,11 +658,12 @@
     else if(action === "volver"){ state.screen = "lista"; render(); }
     else if(action === "filtroEstado"){ state.filterEstado = el.getAttribute('data-estado'); render(); }
     else if(action === "filtroObra"){ state.filterObra = el.getAttribute('data-obra'); render(); }
+    else if(action === "filtroInspector"){ state.filterInspector = el.getAttribute('data-inspector'); render(); }
     else if(action === "nuevoCert"){ state.sheet = "nuevoCert"; render(); }
     else if(action === "nuevoMov"){ state.sheet = "nuevoMov"; render(); }
     else if(action === "cerrarSheet" || action === "cerrarSheetBg"){ state.sheet = null; render(); }
     else if(action === "addContratista"){ await addListaInline('fNuevaContratista','fContratista','contratistas','addContratista'); }
-    else if(action === "addObra"){ await addListaInline('fNuevaObra','fObra','obras','addObra'); }
+    else if(action === "addObra"){ await addObraInline(); }
     else if(action === "addTarea"){ await addListaInline('fNuevaTarea','fTarea','tareas','addTarea'); }
     else if(action === "guardarCert"){ await guardarCertificado(); }
     else if(action === "guardarMov"){ await guardarMovimiento(); }
@@ -683,13 +678,15 @@
     if(!usuario || !pin){ state.loginError = "Completá usuario y PIN."; render(); return; }
     state.loggingIn = true; render();
     try {
-      var res = await apiPost('login', { usuario: usuario, pin: pin });
+      var res = await apiPost('data', { usuario: usuario, pin: pin });
       if(res && res.ok){
-        state.session = { usuario: usuario, nombre: res.nombre || usuario };
-        state.loading = true; state.loggingIn = false; render();
-        await refreshData();
-        state.loading = false;
-        state.screen = "panel";
+        state.session = { usuario: usuario, pin: pin, nombre: res.nombre, rol: res.rol };
+        state.certificados = res.certificados || [];
+        state.movimientos = res.movimientos || [];
+        state.listas = res.listas || { contratistas: [], tareas: [] };
+        state.obras = res.obras || [];
+        state.usuariosNombres = res.usuariosNombres || {};
+        state.loggingIn = false; state.loading = false; state.screen = "panel";
         render();
       } else {
         state.loggingIn = false;
@@ -707,22 +704,41 @@
     var input = document.getElementById(inputId);
     var val = input.value.trim();
     if(!val) return;
-    if(state.listas[listaKey].indexOf(val) === -1){
-      state.listas[listaKey].push(val);
-    }
+    if(state.listas[listaKey].indexOf(val) === -1) state.listas[listaKey].push(val);
     input.value = "";
     var sel = document.getElementById(selectId);
     if(sel){
       var exists = Array.prototype.some.call(sel.options, function(o){ return o.value === val; });
-      if(!exists){
-        var opt = document.createElement('option');
-        opt.value = val; opt.textContent = val;
-        sel.appendChild(opt);
-      }
+      if(!exists){ var opt = document.createElement('option'); opt.value = val; opt.textContent = val; sel.appendChild(opt); }
       sel.value = val;
     }
-    try { await apiPost(apiAction, { valor: val }); }
+    try { await apiPost(apiAction, authPayload({ valor: val })); }
     catch(e){ showToast("No se pudo guardar en la planilla, pero podés seguir usando este valor ahora.", true); }
+  }
+
+  async function addObraInline(){
+    var input = document.getElementById('fNuevaObra');
+    var val = input.value.trim();
+    if(!val) return;
+    try {
+      var res = await apiPost('addObra', authPayload({ valor: val }));
+      if(res && res.ok === false){
+        showToast(res.error || "No se pudo agregar la obra.", true);
+        return;
+      }
+      if(state.obras.every(function(o){ return o.obra !== val; })){
+        state.obras.push({ obra: val, inspector: state.session.usuario });
+      }
+      input.value = "";
+      var sel = document.getElementById('fObra');
+      if(sel){
+        var exists = Array.prototype.some.call(sel.options, function(o){ return o.value === val; });
+        if(!exists){ var opt = document.createElement('option'); opt.value = val; opt.textContent = val; sel.appendChild(opt); }
+        sel.value = val;
+      }
+    } catch(e){
+      showToast("No se pudo conectar con la planilla.", true);
+    }
   }
 
   async function guardarCertificado(){
@@ -732,10 +748,7 @@
     var tarea = document.getElementById('fTarea').value;
     var fecha = document.getElementById('fFecha').value;
 
-    if(!nro || !contratista || !obra || !tarea || !fecha){
-      showToast("Completá todos los campos.", true);
-      return;
-    }
+    if(!nro || !contratista || !obra || !tarea || !fecha){ showToast("Completá todos los campos.", true); return; }
     if(state.certificados.some(function(c){ return c.nro.toLowerCase() === nro.toLowerCase(); })){
       showToast("Ya existe un certificado con ese número.", true);
       return;
@@ -744,13 +757,13 @@
     var btn = document.getElementById('btnGuardarCert');
     btn.setAttribute('disabled','disabled'); btn.textContent = "Guardando…";
     try {
-      var res = await apiPost('addCertificado', { nro: nro, contratista: contratista, obra: obra, tipoTarea: tarea, fechaRecepcion: fecha, usuario: state.session.usuario });
+      var res = await apiPost('addCertificado', authPayload({ nro: nro, contratista: contratista, obra: obra, tipoTarea: tarea, fechaRecepcion: fecha }));
       if(res && res.ok === false){
         showToast(res.error || "No se pudo guardar.", true);
         btn.removeAttribute('disabled'); btn.textContent = "Guardar certificado";
         return;
       }
-      await apiPost('addMovimiento', { nro: nro, fecha: fecha, estadoAnterior: "", estadoNuevo: "Ingresado", observacion: "Certificado recibido.", usuario: state.session.usuario });
+      await apiPost('addMovimiento', authPayload({ nro: nro, fecha: fecha, estadoAnterior: "", estadoNuevo: "Ingresado", observacion: "Certificado recibido." }));
     } catch(e){
       showToast("No se pudo guardar en la planilla. Verificá tu conexión.", true);
       btn.removeAttribute('disabled'); btn.textContent = "Guardar certificado";
@@ -775,7 +788,12 @@
     var btn = document.getElementById('btnGuardarMov');
     btn.setAttribute('disabled','disabled'); btn.textContent = "Guardando…";
     try {
-      await apiPost('addMovimiento', { nro: nro, fecha: fecha, estadoAnterior: estadoAnt, estadoNuevo: estadoNuevo, observacion: obs, usuario: state.session.usuario });
+      var res = await apiPost('addMovimiento', authPayload({ nro: nro, fecha: fecha, estadoAnterior: estadoAnt, estadoNuevo: estadoNuevo, observacion: obs }));
+      if(res && res.ok === false){
+        showToast(res.error || "No se pudo guardar.", true);
+        btn.removeAttribute('disabled'); btn.textContent = "Guardar movimiento";
+        return;
+      }
     } catch(e){
       showToast("No se pudo guardar en la planilla. Verificá tu conexión.", true);
       btn.removeAttribute('disabled'); btn.textContent = "Guardar movimiento";
@@ -788,7 +806,6 @@
     await refreshData();
   }
 
-  // ---------------- init ----------------
   state.loading = false;
   render();
 })();
