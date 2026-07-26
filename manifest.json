@@ -1,6 +1,6 @@
 {
-  "name": "App Inspector",
-  "short_name": "App Inspector",
+  "name": "FTTH Control - Certificados de Obra",
+  "short_name": "FTTH Control",
   "description": "Control de certificados de obra FTTH: alta, seguimiento de estados y panel de control.",
   "start_url": "./index.html",
   "scope": "./",
