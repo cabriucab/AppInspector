@@ -90,11 +90,13 @@
   .badge.pagado{background:var(--c-pagado-bg); color:var(--c-pagado-ink);}
   .badge.sin{background:var(--c-sin-bg); color:var(--c-sin-ink);}
   .badge.obra{background:#EAE7FB; color:#4A3B96;}
+  .badge.contratista{background:#FFEBDD; color:#B14B15;}
   .badge.inspector{background:#EAF6F1; color:#12805A;}
 
   .search-wrap{display:flex; gap:8px; margin-bottom:12px;}
   .search-input, .field-select{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:14px; font-family:var(--font-body); color:var(--ink);}
   .search-input:focus, .field-select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:transparent;}
+  .field-select[disabled]{opacity:0.5;}
   .filter-label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); margin:12px 0 6px;}
   .chip-row{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:6px; scrollbar-width:none;}
   .chip-row::-webkit-scrollbar{display:none;}
@@ -105,8 +107,7 @@
   .cert-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
   .cert-nro{font-family:var(--font-display); font-weight:600; font-size:14px;}
   .cert-meta{font-size:12.5px; color:var(--ink-soft); display:flex; flex-wrap:wrap; gap:4px 10px;}
-  .cert-obra-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
-  .cert-obra{font-size:11.5px; font-weight:700; color:#4A3B96;}
+  .cert-tag-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
 
   .empty-state{text-align:center; padding:60px 20px; color:var(--ink-soft);}
   .empty-state-icon{font-size:32px; margin-bottom:10px;}
@@ -177,7 +178,7 @@
 (function(){
   "use strict";
 
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKO30C0lEMgqC8plg-uR2Ee9bo13GfDjyUqJL89HILsHkhCd6KQUNXBeR-oXXpYQ44/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-ofvzPcqiQ703FHxer1LK117wjQHL1_uFvZ_LbwaJ8GvNh4ztwiNRxmlfGOz_LT4N/exec";
 
   var ESTADOS = ["Ingresado","En Control","Observado","Controlado OK","Enviado a Pago","Pagado"];
   var ESTADO_CLASS = {
@@ -201,10 +202,11 @@
     loginUsuario: "",
     certificados: [],
     movimientos: [],
-    listas: { contratistas: [], tareas: [] },
-    obras: [],                 // [{obra, inspector}]
-    usuariosNombres: {},       // { usuario: nombreCompleto }
+    listas: { contratistas: [], tareas: [] },   // contratistas: solo las asignadas al usuario (o todas si es admin)
+    obras: [],                  // [{obra, contratista}]
+    usuariosNombres: {},
     filterEstado: "Todos",
+    filterContratista: "Todas",
     filterObra: "Todas",
     filterInspector: "Todos",
     search: "",
@@ -213,7 +215,6 @@
   };
 
   function isAdmin(){ return state.session && state.session.rol === "Administrador"; }
-
   function configured(){ return APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf("http") === 0; }
 
   async function apiPost(action, payload){
@@ -276,19 +277,12 @@
     if(p.length!==3) return iso;
     return p[2]+"/"+p[1]+"/"+p[0];
   }
-  function obraInspectorMap(){
-    var map = {};
-    state.obras.forEach(function(o){ map[o.obra] = o.inspector; });
-    return map;
+  function obrasDeContratista(contratista){
+    return state.obras.filter(function(o){ return o.contratista === contratista; }).map(function(o){ return o.obra; });
   }
-  function nombreDe(usuario){
-    return state.usuariosNombres[usuario] || usuario;
-  }
+  function nombreDe(usuario){ return state.usuariosNombres[usuario] || usuario; }
   function certConEstado(){
-    var map = obraInspectorMap();
-    return state.certificados.map(function(c){
-      return Object.assign({}, c, { estado: estadoActual(c.nro), inspector: map[c.obra] || c.creadoPor });
-    });
+    return state.certificados.map(function(c){ return Object.assign({}, c, { estado: estadoActual(c.nro) }); });
   }
   function groupCount(list, key){
     var map = {};
@@ -314,9 +308,9 @@
   function iconHome(){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>'; }
   function iconList(){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>'; }
   function iconPlus(){ return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; }
-  function iconMark(){ return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h10"/><circle cx="12" cy="12" r="1.4" fill="white" stroke="none"/></svg>'; }
-  function iconMarkBig(){ return '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h10"/><circle cx="12" cy="12" r="1.4" fill="white" stroke="none"/></svg>'; }
   function iconRefresh(){ return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>'; }
+  function iconMark(){ return '<svg width="16" height="16" viewBox="0 0 24 24"><g transform="translate(11,12)"><circle r="6.4" fill="none" stroke="white" stroke-width="1.5"/><ellipse rx="6.4" ry="2.3" fill="none" stroke="white" stroke-width="1.1"/><ellipse rx="2.3" ry="6.4" fill="none" stroke="white" stroke-width="1.1"/></g><path d="M 5 5.5 A 9.5 6 -12 1 1 19.5 15" fill="none" stroke="#FF7A45" stroke-width="1.9" stroke-linecap="round"/><g stroke-linecap="round"><path d="M19.5 15 L22.3 13.6" stroke="#2EC4B6" stroke-width="1.3"/><path d="M19.5 15 L22.6 16.3" stroke="white" stroke-width="1.3"/><circle cx="22.3" cy="13.6" r="0.9" fill="#2EC4B6"/><circle cx="22.6" cy="16.3" r="0.9" fill="white"/></g></svg>'; }
+  function iconMarkBig(){ return '<svg width="26" height="26" viewBox="0 0 24 24"><g transform="translate(11,12)"><circle r="6.4" fill="none" stroke="white" stroke-width="1.5"/><ellipse rx="6.4" ry="2.3" fill="none" stroke="white" stroke-width="1.1"/><ellipse rx="2.3" ry="6.4" fill="none" stroke="white" stroke-width="1.1"/></g><path d="M 5 5.5 A 9.5 6 -12 1 1 19.5 15" fill="none" stroke="#FF7A45" stroke-width="1.9" stroke-linecap="round"/><g stroke-linecap="round"><path d="M19.5 15 L22.3 13.6" stroke="#2EC4B6" stroke-width="1.3"/><path d="M19.5 15 L22.6 16.3" stroke="white" stroke-width="1.3"/><circle cx="22.3" cy="13.6" r="0.9" fill="#2EC4B6"/><circle cx="22.6" cy="16.3" r="0.9" fill="white"/></g></svg>'; }
 
   function render(){
     var app = document.getElementById('app');
@@ -347,7 +341,7 @@
         (state.loginError ? '<div class="login-error">'+esc(state.loginError)+'</div>' : '') +
         '<button class="btn btn-primary" style="margin-top:14px;" data-action="login" '+(state.loggingIn?'disabled':'')+'>'+(state.loggingIn?'Ingresando…':'Ingresar')+'</button>' +
       '</div>' +
-      '<div class="login-footer">Los datos se guardan en la planilla de Google Sheets del equipo. Cada inspector ve solo sus propias obras; el administrador ve todo.'+(configured()?'':' <br><b>Falta configurar la URL de Apps Script en el archivo.</b>')+'</div>' +
+      '<div class="login-footer">Los datos se guardan en la planilla de Google Sheets del equipo. Cada inspector ve solo las contratistas que tiene asignadas; el administrador ve todo.'+(configured()?'':' <br><b>Falta configurar la URL de Apps Script en el archivo.</b>')+'</div>' +
     '</div>';
   }
 
@@ -373,7 +367,7 @@
 
     var html = '<div class="topbar">' + topbarBrand() +
       '<div class="screen-title">Panel de Control</div>' +
-      '<p class="screen-sub">' + total + ' certificado' + (total===1?'':'s') + (isAdmin()?' (todos los inspectores)':'') + '</p>' +
+      '<p class="screen-sub">' + total + ' certificado' + (total===1?'':'s') + (isAdmin()?' (todas las contratistas)':'') + '</p>' +
     '</div>';
 
     html += '<div class="content">';
@@ -395,12 +389,12 @@
     '</div>';
 
     html += barSection("Por estado", ESTADOS, porEstado, total, function(k){ return BAR_COLOR[k]; });
+    html += barSection("Por contratista", Object.keys(porContratista).sort(), porContratista, total, function(){ return "#B14B15"; });
     html += barSection("Por obra", Object.keys(porObra).sort(), porObra, total, function(){ return "#4A3B96"; });
     if(isAdmin()){
-      var porInspector = groupCount(withEstado.map(function(c){ return Object.assign({}, c, { inspectorNombre: nombreDe(c.inspector) }); }), "inspectorNombre");
+      var porInspector = groupCount(withEstado.map(function(c){ return Object.assign({}, c, { inspectorNombre: nombreDe(c.creadoPor) }); }), "inspectorNombre");
       html += barSection("Por inspector", Object.keys(porInspector).sort(), porInspector, total, function(){ return "#12805A"; });
     }
-    html += barSection("Por contratista", Object.keys(porContratista).sort(), porContratista, total, function(){ return "var(--accent-2)"; });
     html += barSection("Por tipo de tarea", Object.keys(porTarea).sort(), porTarea, total, function(){ return "var(--ink)"; });
 
     html += '</div>';
@@ -434,15 +428,17 @@
     return withEstado.filter(function(c){
       var matchesQ = !q || (c.nro.toLowerCase().indexOf(q)>-1 || c.contratista.toLowerCase().indexOf(q)>-1 || (c.obra||"").toLowerCase().indexOf(q)>-1);
       var matchesE = state.filterEstado === "Todos" || c.estado === state.filterEstado;
+      var matchesC = state.filterContratista === "Todas" || c.contratista === state.filterContratista;
       var matchesO = state.filterObra === "Todas" || c.obra === state.filterObra;
-      var matchesI = !isAdmin() || state.filterInspector === "Todos" || c.inspector === state.filterInspector;
-      return matchesQ && matchesE && matchesO && matchesI;
+      var matchesI = !isAdmin() || state.filterInspector === "Todos" || c.creadoPor === state.filterInspector;
+      return matchesQ && matchesE && matchesC && matchesO && matchesI;
     }).sort(function(a,b){ return a.fechaRecepcion < b.fechaRecepcion ? 1 : -1; });
   }
 
   function renderLista(){
     var withEstado = certConEstado();
     var filtered = filteredCerts();
+    var contratistas = state.listas.contratistas;
     var obras = state.obras.map(function(o){ return o.obra; });
 
     var html = '<div class="topbar">' + topbarBrand() +
@@ -459,16 +455,24 @@
       return '<button class="chip'+(state.filterEstado===e?' active':'')+'" data-action="filtroEstado" data-estado="'+esc(e)+'">'+esc(e)+'</button>';
     }).join("") + '</div>';
 
+    if(contratistas.length > 1){
+      html += '<div class="filter-label">Contratista</div>';
+      var chipsC = ["Todas"].concat(contratistas);
+      html += '<div class="chip-row">' + chipsC.map(function(c){
+        return '<button class="chip'+(state.filterContratista===c?' active':'')+'" data-action="filtroContratista" data-contratista="'+esc(c)+'">'+esc(c)+'</button>';
+      }).join("") + '</div>';
+    }
+
     if(obras.length){
       html += '<div class="filter-label">Obra</div>';
       var chipsO = ["Todas"].concat(obras);
-      html += '<div class="chip-row" id="chipRowObra">' + chipsO.map(function(o){
+      html += '<div class="chip-row">' + chipsO.map(function(o){
         return '<button class="chip'+(state.filterObra===o?' active':'')+'" data-action="filtroObra" data-obra="'+esc(o)+'">'+esc(o)+'</button>';
       }).join("") + '</div>';
     }
 
     if(isAdmin()){
-      var inspectores = Array.from(new Set(state.obras.map(function(o){ return o.inspector; }))).sort();
+      var inspectores = Array.from(new Set(withEstado.map(function(c){ return c.creadoPor; }))).sort();
       if(inspectores.length){
         html += '<div class="filter-label">Inspector</div>';
         var chipsI = ["Todos"].concat(inspectores);
@@ -489,11 +493,12 @@
       return '<div class="cert-card" data-action="abrir" data-nro="'+esc(c.nro)+'">' +
         '<div class="cert-card-top"><span class="cert-nro">'+esc(c.nro)+'</span>' +
         '<span class="badge '+ESTADO_CLASS[c.estado]+'">'+esc(c.estado)+'</span></div>' +
-        '<div class="cert-obra-row">' +
-          (c.obra ? '<span class="cert-obra">'+esc(c.obra)+'</span>' : '') +
-          (isAdmin() && c.inspector ? '<span class="badge inspector">'+esc(nombreDe(c.inspector))+'</span>' : '') +
+        '<div class="cert-tag-row">' +
+          '<span class="badge contratista">'+esc(c.contratista)+'</span>' +
+          (c.obra ? '<span class="badge obra">'+esc(c.obra)+'</span>' : '') +
+          (isAdmin() && c.creadoPor ? '<span class="badge inspector">'+esc(nombreDe(c.creadoPor))+'</span>' : '') +
         '</div>' +
-        '<div class="cert-meta"><span>'+esc(c.contratista)+'</span><span>·</span><span>'+esc(c.tipoTarea)+'</span><span>·</span><span>'+esc(fmtFecha(c.fechaRecepcion))+'</span></div>' +
+        '<div class="cert-meta"><span>'+esc(c.tipoTarea)+'</span><span>·</span><span>'+esc(fmtFecha(c.fechaRecepcion))+'</span></div>' +
       '</div>';
     }).join("");
   }
@@ -502,8 +507,6 @@
     var nro = state.selectedNro;
     var cert = state.certificados.find(function(c){ return c.nro===nro; });
     if(!cert){ state.screen = "lista"; return renderLista(); }
-    var map = obraInspectorMap();
-    var inspector = map[cert.obra];
     var estado = estadoActual(nro);
     var fc = fechaControl(nro);
     var fe = fechaEnvio(nro);
@@ -516,11 +519,12 @@
 
     html += '<div class="content">';
     html += '<div class="detail-card">' +
-      '<div class="cert-obra-row" style="margin-bottom:8px;">' +
+      '<div class="cert-tag-row" style="margin-bottom:8px;">' +
+        '<span class="badge contratista">'+esc(cert.contratista)+'</span>' +
         (cert.obra ? '<span class="badge obra">'+esc(cert.obra)+'</span>' : '') +
-        (isAdmin() && inspector ? '<span class="badge inspector">'+esc(nombreDe(inspector))+'</span>' : '') +
+        (isAdmin() && cert.creadoPor ? '<span class="badge inspector">'+esc(nombreDe(cert.creadoPor))+'</span>' : '') +
       '</div>' +
-      '<div class="cert-card-top" style="margin-bottom:2px;"><span class="detail-tarea">'+esc(cert.contratista)+' · '+esc(cert.tipoTarea)+'</span>' +
+      '<div class="cert-card-top" style="margin-bottom:2px;"><span class="detail-tarea">'+esc(cert.tipoTarea)+'</span>' +
       '<span class="badge '+ESTADO_CLASS[estado]+'">'+esc(estado)+'</span></div>' +
       '<div class="detail-grid">' +
         detailField("Fecha de recepción", fmtFecha(cert.fechaRecepcion), false) +
@@ -577,21 +581,20 @@
 
   function sheetNuevoCert(){
     var contratistas = state.listas.contratistas;
-    var obras = state.obras.map(function(o){ return o.obra; });
     var tareas = state.listas.tareas;
     var today = new Date().toISOString().slice(0,10);
     return '<div class="sheet-title">Nuevo certificado</div>' +
-      '<div class="field"><label class="field-label">N° de certificado</label>' +
-        '<input class="field-input" id="fNro" type="text" placeholder="Ej: CERT-0003" autocomplete="off"></div>' +
-      '<div class="field"><label class="field-label">Contratista</label>' +
+      '<div class="field"><label class="field-label">Contratista'+(!isAdmin()?' (asignada a vos)':'')+'</label>' +
         selectHtml('fContratista', contratistas) +
         '<div class="add-inline"><input class="field-input" id="fNuevaContratista" type="text" placeholder="Agregar contratista nueva"><button data-action="addContratista">Agregar</button></div>' +
+        (contratistas.length===0 ? '<div class="field-hint">Todavía no tenés contratistas asignadas. Agregá una arriba para empezar.</div>' : '') +
       '</div>' +
-      '<div class="field"><label class="field-label">Obra'+(!isAdmin()?' (tuya)':'')+'</label>' +
-        selectHtml('fObra', obras) +
-        '<div class="add-inline"><input class="field-input" id="fNuevaObra" type="text" placeholder="Agregar obra nueva"><button data-action="addObra">Agregar</button></div>' +
-        (obras.length===0 ? '<div class="field-hint">Todavía no tenés obras asignadas. Agregá una arriba para empezar.</div>' : '') +
+      '<div class="field"><label class="field-label">Obra</label>' +
+        '<select class="field-select" id="fObra" disabled><option value="">Elegí primero una contratista…</option></select>' +
+        '<div class="add-inline"><input class="field-input" id="fNuevaObra" type="text" placeholder="Agregar obra nueva de esa contratista"><button data-action="addObra">Agregar</button></div>' +
       '</div>' +
+      '<div class="field"><label class="field-label">N° de certificado</label>' +
+        '<input class="field-input" id="fNro" type="text" placeholder="Ej: CERT-0003" autocomplete="off"></div>' +
       '<div class="field"><label class="field-label">Tipo de tarea</label>' +
         selectHtml('fTarea', tareas) +
         '<div class="add-inline"><input class="field-input" id="fNuevaTarea" type="text" placeholder="Agregar tipo de tarea nuevo"><button data-action="addTarea">Agregar</button></div>' +
@@ -649,6 +652,28 @@
       fUsuario.addEventListener('input', function(){ state.loginUsuario = fUsuario.value; });
       fUsuario.addEventListener('keydown', function(ev){ if(ev.key === "Enter") handleAction("login"); });
     }
+    var fContratista = document.getElementById('fContratista');
+    if(fContratista){ fContratista.addEventListener('change', function(){ refreshObraSelect(""); }); }
+  }
+
+  // Repuebla el <select> de Obra segun la Contratista elegida, sin re-renderizar
+  // el resto del formulario (para no perder lo ya tipeado en N de certificado).
+  function refreshObraSelect(preselect){
+    var fContratista = document.getElementById('fContratista');
+    var fObra = document.getElementById('fObra');
+    if(!fContratista || !fObra) return;
+    var contratista = fContratista.value;
+    if(!contratista){
+      fObra.disabled = true;
+      fObra.innerHTML = '<option value="">Elegí primero una contratista…</option>';
+      return;
+    }
+    var opciones = obrasDeContratista(contratista);
+    fObra.disabled = false;
+    fObra.innerHTML = '<option value="">Seleccionar…</option>' + opciones.map(function(o){
+      return '<option value="'+esc(o)+'">'+esc(o)+'</option>';
+    }).join("");
+    if(preselect && opciones.indexOf(preselect) > -1) fObra.value = preselect;
   }
 
   function refreshListaResultados(){
@@ -669,12 +694,13 @@
     else if(action === "abrir"){ state.selectedNro = el.getAttribute('data-nro'); state.screen = "detalle"; render(); }
     else if(action === "volver"){ state.screen = "lista"; render(); }
     else if(action === "filtroEstado"){ state.filterEstado = el.getAttribute('data-estado'); render(); }
+    else if(action === "filtroContratista"){ state.filterContratista = el.getAttribute('data-contratista'); render(); }
     else if(action === "filtroObra"){ state.filterObra = el.getAttribute('data-obra'); render(); }
     else if(action === "filtroInspector"){ state.filterInspector = el.getAttribute('data-inspector'); render(); }
     else if(action === "nuevoCert"){ state.sheet = "nuevoCert"; render(); }
     else if(action === "nuevoMov"){ state.sheet = "nuevoMov"; render(); }
     else if(action === "cerrarSheet" || action === "cerrarSheetBg"){ state.sheet = null; render(); }
-    else if(action === "addContratista"){ await addListaInline('fNuevaContratista','fContratista','contratistas','addContratista'); }
+    else if(action === "addContratista"){ await addContratistaInline(); }
     else if(action === "addObra"){ await addObraInline(); }
     else if(action === "addTarea"){ await addListaInline('fNuevaTarea','fTarea','tareas','addTarea'); }
     else if(action === "guardarCert"){ await guardarCertificado(); }
@@ -728,35 +754,50 @@
     catch(e){ showToast("No se pudo guardar en la planilla, pero podés seguir usando este valor ahora.", true); }
   }
 
-  async function addObraInline(){
-    var input = document.getElementById('fNuevaObra');
+  async function addContratistaInline(){
+    var input = document.getElementById('fNuevaContratista');
     var val = input.value.trim();
     if(!val) return;
     try {
-      var res = await apiPost('addObra', authPayload({ valor: val }));
-      if(res && res.ok === false){
-        showToast(res.error || "No se pudo agregar la obra.", true);
-        return;
-      }
-      if(state.obras.every(function(o){ return o.obra !== val; })){
-        state.obras.push({ obra: val, inspector: state.session.usuario });
-      }
+      var res = await apiPost('addContratista', authPayload({ valor: val }));
+      if(res && res.ok === false){ showToast(res.error || "No se pudo agregar la contratista.", true); return; }
+      if(state.listas.contratistas.indexOf(val) === -1) state.listas.contratistas.push(val);
       input.value = "";
-      var sel = document.getElementById('fObra');
+      var sel = document.getElementById('fContratista');
       if(sel){
         var exists = Array.prototype.some.call(sel.options, function(o){ return o.value === val; });
         if(!exists){ var opt = document.createElement('option'); opt.value = val; opt.textContent = val; sel.appendChild(opt); }
         sel.value = val;
       }
+      refreshObraSelect("");
+    } catch(e){
+      showToast("No se pudo conectar con la planilla.", true);
+    }
+  }
+
+  async function addObraInline(){
+    var input = document.getElementById('fNuevaObra');
+    var val = input.value.trim();
+    var contratista = (document.getElementById('fContratista') || {}).value;
+    if(!val) return;
+    if(!contratista){ showToast("Elegí primero una contratista.", true); return; }
+    try {
+      var res = await apiPost('addObra', authPayload({ valor: val, contratista: contratista }));
+      if(res && res.ok === false){ showToast(res.error || "No se pudo agregar la obra.", true); return; }
+      if(state.obras.every(function(o){ return o.obra !== val; })){
+        state.obras.push({ obra: val, contratista: contratista });
+      }
+      input.value = "";
+      refreshObraSelect(val);
     } catch(e){
       showToast("No se pudo conectar con la planilla.", true);
     }
   }
 
   async function guardarCertificado(){
-    var nro = document.getElementById('fNro').value.trim();
     var contratista = document.getElementById('fContratista').value;
     var obra = document.getElementById('fObra').value;
+    var nro = document.getElementById('fNro').value.trim();
     var tarea = document.getElementById('fTarea').value;
     var fecha = document.getElementById('fFecha').value;
 
